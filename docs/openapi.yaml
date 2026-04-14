@@ -1,23 +1,34 @@
 openapi: 3.1.0
+
 info:
   title: Task API
   version: 1.0.0
+
 servers:
   - url: http://localhost:3000
     description: Local server
   - url: https://task-api-service-e4gs.onrender.com
     description: Production server
+
 tags:
   - name: Tasks
     description: Task-related endpoints
   - name: Monitoring
     description: Operational endpoints, such as health checks
+
 paths:
   /tasks:
     get:
       summary: List all tasks
       tags:
         - Tasks
+      parameters:
+        - in: query
+          name: completed
+          required: false
+          schema:
+            type: boolean
+          description: Filter tasks by completion status (true or false)
       responses:
         '200':
           description: OK
@@ -27,6 +38,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
+
     post:
       summary: Create a new task
       tags:
@@ -59,7 +71,8 @@ paths:
                       type: string
                 example:
                   errors:
-                    - 'Title must be at least 3 characters'
+                    - "Title must be at least 3 characters"
+
   /health:
     get:
       summary: Health Check
@@ -77,6 +90,7 @@ paths:
                   status:
                     type: string
                     example: ok
+
 components:
   schemas:
     Task:
