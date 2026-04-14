@@ -2,19 +2,16 @@ openapi: 3.1.0
 info:
   title: Task API
   version: 1.0.0
-
 servers:
   - url: http://localhost:3000
     description: Local server
   - url: https://task-api-service-e4gs.onrender.com
     description: Production server
-
 tags:
   - name: Tasks
     description: Task-related endpoints
   - name: Monitoring
     description: Operational endpoints, such as health checks
-
 paths:
   /tasks:
     get:
@@ -26,8 +23,9 @@ paths:
           name: completed
           required: false
           schema:
-            type: boolean
-          description: Filter tasks by completion status (true or false)
+            type: string
+            enum: [true, false]
+          description: Filter tasks by completion status. Must be "true" or "false" if provided.
       responses:
         '200':
           description: OK
@@ -37,7 +35,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
-
+        '400':
+          description: Bad request due to invalid completed parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: completed must be true or false
     post:
       summary: Create a new task
       tags:
@@ -68,10 +76,9 @@ paths:
                     type: array
                     items:
                       type: string
-                example:
-                  errors:
-                    - "Title must be at least 3 characters"
-
+              example:
+                errors:
+                  - "Title must be at least 3 characters"
   /health:
     get:
       summary: Health Check
@@ -88,8 +95,8 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: ok
-
+              example:
+                status: ok
 components:
   schemas:
     Task:
